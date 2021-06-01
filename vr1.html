@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="/panorama/dist/aframe-v1.2.0.min.js"></script>
+    <!--<script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>-->
+    <script src="/panorama/dist/hls.js"></script>
+    <script src="/panorama/dist/aframe-video-controls.min.js"></script>
+    <!--<script src="/panorama/dist/a-touch-controls.js"></script>-->
+    <script src="/panorama/dist/a-frame-touch-look-controls.js"></script>
+    <script src="/panorama/dist/multitouch-look-controls.js"></script>
+    <title>全景直播</title>
+</head>
+<body>
+
+<a-scene vr-mode-ui="enabled: false" >
+    <video id="video" autoplay loop crossorigin="anonymous" muted controls src="https://qj.017vr.com:1940/hls1/vr1.m3u8">
+    </video>
+    <a-text  position="-8 3 -8" value="" color="red" scale="3 3 3"></a-text>
+    <!--<a-entity distance="0.0" video-controls="src:#video"></a-entity>-->
+    <a-entity  touch-look-controls id="cam" camera="zoom: 1; user-height: 1.6;"   video-controls="src:#video"></a-entity>
+    <!--<a-camera>-->
+    <!--    <a-cursor color="#FF0000"></a-cursor>-->
+    <!--</a-camera>-->
+    <a-videosphere src="#video" rotation="0 180 0" style="background-color: antiquewhite"></a-videosphere>
+</a-scene>
+</body>
+</html>
+
+
+<script>
+    window.addEventListener("wheel", (event) => {
+    // small increments for smoother zooming
+    const delta = event.wheelDelta / 120 / 10;
+    var mycam = document.getElementById("cam").getAttribute("camera");
+    var finalZoom =
+      document.getElementById("cam").getAttribute("camera").zoom + delta;
+
+    // limiting the zoom
+    if (finalZoom < 0.5) finalZoom = 0.5;
+    if (finalZoom > 2) finalZoom = 2;
+    mycam.zoom = finalZoom;
+
+    document.getElementById("cam").setAttribute("camera", mycam);
+  });
+    let video = document.getElementById('video');
+    if(Hls.isSupported()) {
+
+        var hls = new Hls({
+            debug: false
+        });
+        hls.loadSource('https://qj.017vr.com:1940/hls1/vr1.m3u8');
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MEDIA_ATTACHED, function() {
+            video.muted = true;
+            video.play();
+        });
+    }
+        // hls.js is not supported on platforms that do not have Media Source Extensions (MSE) enabled.
+        // When the browser has built-in HLS support (check using `canPlayType`), we can provide an HLS manifest (i.e. .m3u8 URL) directly to the video element throught the `src` property.
+    // This is using the built-in support of the plain video element, without using hls.js.
+    else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = 'https://qj.017vr.com:1940/hls1/vr1.m3u8';
+        video.addEventListener('canplay',function() {
+            video.play();
+        });
+    }
+</script>
