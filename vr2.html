@@ -12,7 +12,7 @@
 <body>
 
     <a-scene>
-        <video id="video" autoplay loop crossorigin="anonymous" 
+        <video id="video" autoplay loop crossorigin="anonymous" muted controls
             src="https://qj.017vr.com:1940/hls2/vr2.m3u8">
         </video>
         <a-text position="-8 3 -8" value="" color="red" scale="3 3 3"></a-text>
@@ -44,10 +44,7 @@
         mycam.zoom=value
         document.getElementById('cam').setAttribute('camera', mycam);
     }
-
-    console.log(document.getElementById("cam"));
-    console.log(document.getElementById("cam").getAttribute("camera"));
-
+    
     if (Hls.isSupported()) {
 
         var hls = new Hls({
