@@ -6,6 +6,7 @@
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script src="/panorama/dist/aframe-video-controls.min.js"></script>
+    <script src="./dist/a-frame-touch-look-controls.js"></script>
     <title>全景直播</title>
 </head>
 
@@ -17,12 +18,12 @@
         </video>
         <a-text position="-8 3 -8" value="" color="red" scale="3 3 3"></a-text>
         <a-entity distance="0.0" video-controls="src:#video"></a-entity>
-        <a-camera id="cam">
+        <a-camera id="cam" touch-look-controls>
         </a-camera>
         <a-videosphere src="#video" rotation="0 180 0" style="background-color: antiquewhite"></a-videosphere>
     </a-scene>
     <!-- 添加画面缩放滑动条 -->
-    <input type="range" id="range1" min="1" max="5" step="0.1" oninput="zoomChange(range1.value)"  value="1" />
+    <input type="range" id="range1" min="1" max="5" step="0.1" oninput="zoomChange(range1.value)" value="1" />
 </body>
 
 </html>
@@ -31,20 +32,29 @@
 <script>
     let video = document.getElementById('video');
 
+    //鼠标滚轮监听事件
+    window.addEventListener("wheel", (event) => {
+        // small increments for smoother zooming
+        const delta = event.wheelDelta / 120 / 10;
+        const wheelzoom = document.getElementById("cam").getAttribute("camera").zoom + delta
+        zoomChange(wheelzoom)
+    });
+
     //镜头缩放函数
     function zoomChange(value) {
         //限定缩放范围在1到5之间
-        const min=1
-        const max=5
-        value=(value<min)?min:value
-        value=(value>max)?max:value
+        const min = 1
+        const max = 5
+        value = (value < min) ? min : value
+        value = (value > max) ? max : value
         //获取camera元素
         let mycam = document.getElementById("cam").getAttribute("camera")
         //修改camera元素的zoom属性
-        mycam.zoom=value
+        mycam.zoom = value
         document.getElementById('cam').setAttribute('camera', mycam);
+        document.getElementById('range1').setAttribute('value',value)
     }
-    
+
     if (Hls.isSupported()) {
 
         var hls = new Hls({
