@@ -23,8 +23,8 @@
     </a-scene>
     <!-- 添加画面缩放滑动条 -->
     <div class="ops">
-        <button id="btn" onclick="playOrPause()">播放</button><input type="range" id="range1" min="1" max="5" step="0.1"
-            oninput="zoomChange(range1.value)" value="1" />
+        <button id="btn" onclick="playOrPause(event)">播放</button><input type="range" id="range1" min="1" max="5"
+            step="0.1" oninput="zoomChange(range1.value)" value="1" />
     </div>
 </body>
 
@@ -32,14 +32,23 @@
 
 
 <script>
-    //暂停播放
-    function playOrPause() {
-        let video = document.getElementById("video")
-        console.log(video);
+
+    var video = document.getElementById('video');
+
+    //开始播放
+    function playOrPause(event) {
+        console.log(!!video.pause);
         video.play()
+        console.log(!video.pause);
     }
 
-    let video = document.getElementById('video');
+    //监听video在播放时移除开始播放按钮
+    video.addEventListener("playing",()=>{
+        let btn =document.getElementById("btn")
+        btn.style.display=("none")
+    })
+
+
 
     //鼠标滚轮监听事件
     window.addEventListener("wheel", (event) => {
@@ -73,8 +82,7 @@
         hls.attachMedia(video);
         hls.on(Hls.Events.MEDIA_ATTACHED, function () {
             video.muted = true;
-            // video.play();
-            console.log("play");
+           //giyt video.play();
         });
     }
     // hls.js is not supported on platforms that do not have Media Source Extensions (MSE) enabled.
@@ -84,7 +92,6 @@
         video.src = 'https://qj.017vr.com:1940/hls4/vr4.m3u8';
         video.addEventListener('canplay', function () {
             video.play();
-            console.log("play");
         });
     }
 </script>
@@ -100,5 +107,13 @@
 
     #range1 {
         width: 250px;
+    }
+
+    #btn {
+        background-color: #fff;
+        width: 40px;
+        width: 60px;
+        border-radius: 5px;
+        box-shadow: 1px 1px 3px;
     }
 </style>
