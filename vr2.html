@@ -53,7 +53,7 @@
         document.getElementById('range1').setAttribute('value', value)
     }
 
-    if (Hls.isSupported()) {
+    if (!Hls.isSupported()) {
         alert("支持")
         var hls = new Hls({
             debug: false
