@@ -6,14 +6,13 @@
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script src="./dist/a-frame-touch-look-controls.js"></script>
+
     <title>全景直播</title>
 </head>
 
 <body>
-
     <a-scene>
-        <video id="video" autoplay loop crossorigin="anonymous" 
-            src="https://qj.017vr.com:1940/hls2/vr2.m3u8">
+        <video id="video" autoplay loop crossorigin="anonymous" src="https://qj.017vr.com:1940/hls2/vr2.m3u8">
         </video>
         <a-text position="-8 3 -8" value="" color="red" scale="3 3 3"></a-text>
         <a-entity distance="0.0" video-controls="src:#video"></a-entity>
@@ -51,11 +50,11 @@
         //修改camera元素的zoom属性
         mycam.zoom = value
         document.getElementById('cam').setAttribute('camera', mycam);
-        document.getElementById('range1').setAttribute('value',value)
+        document.getElementById('range1').setAttribute('value', value)
     }
 
     if (Hls.isSupported()) {
-
+        alert("支持")
         var hls = new Hls({
             debug: false
         });
@@ -66,9 +65,7 @@
             video.play();
         });
     }
-    // hls.js is not supported on platforms that do not have Media Source Extensions (MSE) enabled.
-    // When the browser has built-in HLS support (check using `canPlayType`), we can provide an HLS manifest (i.e. .m3u8 URL) directly to the video element throught the `src` property.
-    // This is using the built-in support of the plain video element, without using hls.js.
+
     else if (video.canPlayType('application/vnd.apple.mpegurl')) {
         video.src = 'https://qj.017vr.com:1940/hls2/vr2.m3u8';
         video.addEventListener('canplay', function () {
